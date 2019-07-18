@@ -200,9 +200,17 @@ protected:
                 input_.id = frame_.can_id & CAN_EFF_MASK;
                 input_.is_error = 1;
 
-                LOG("error: " << input_.id);
+                //LOG("error: " << input_.id);
                 setInternalError(input_.id);
-                setNotReady();
+                //setNotReady();
+                LOG("error: " << input_.id);
+                if (frame_.can_id & CAN_ERR_LOSTARB || frame_.can_id & CAN_ERR_CRTL)
+                {
+                    LOG("warn: ignoring arbitration (2) or controller (4) error");
+                } else {
+                    setNotReady();
+                }
+
 
             }else{
                 input_.is_extended = (frame_.can_id & CAN_EFF_FLAG) ? 1 :0;
